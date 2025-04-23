@@ -10,8 +10,8 @@ public class ElGamal {
     private static final SecureRandom random = new SecureRandom();
     private BigInteger p;
     private BigInteger g;
-    private BigInteger publicKey;
-    private BigInteger privateKey;
+    private BigInteger y;
+    private BigInteger x;
 
     /**
      * Konstruktor przyjmujący gotowe parametry p i g.
@@ -49,7 +49,15 @@ public class ElGamal {
             p = BigInteger.probablePrime(bitLength, random);
         } while (p.bitLength() != bitLength);
 
-        BigInteger g = BigInteger.TWO;
+        // Generuj g - generator grupy multiplikatywnej Z_p^*
+        // Znalezienie generatora wymaga znajomości faktoryzacji p-1.
+        // Prostsze (ale nie zawsze poprawne/bezpieczne) podejście to wybranie losowej liczby
+        // i sprawdzenie kilku warunków lub użycie stałej wartości jak 2, jeśli warunki są spełnione.
+        // Tutaj dla uproszczenia wybierzemy g=2, zakładając, że będzie działać.
+        // W realnym systemie to wymagałoby porządnego algorytmu znajdowania generatora.
+        BigInteger g = BigInteger.TWO; // UPROSZCZENIE!
+
+        // Można by dodać sprawdzenie, czy g jest generatorem, ale pomijamy dla prostoty.
 
         System.out.println("Wygenerowano parametry:");
         System.out.println("p (hex): " + p.toString(16));
@@ -68,16 +76,16 @@ public class ElGamal {
 
         do {
             // Generuj x o długości bitowej zbliżonej do p, ale mniejszej niż p-1
-            privateKey = new BigInteger(p.bitLength() - 1, random);
-        } while (privateKey.compareTo(BigInteger.ONE) <= 0 || privateKey.compareTo(pMinusOne) >= 0);
+            x = new BigInteger(p.bitLength() - 1, random);
+        } while (x.compareTo(BigInteger.ONE) <= 0 || x.compareTo(pMinusOne) >= 0);
 
         // Klucz publiczny y = g^x mod p
-        publicKey = g.modPow(privateKey, p);
+        y = g.modPow(x, p);
 
         // W praktyce klucze trzeba bezpiecznie przechowywać/eksportować
         System.out.println("\nWygenerowano klucze:");
-        System.out.println("Klucz prywatny x (hex): " + privateKey.toString(16));
-        System.out.println("Klucz publiczny y (hex): " + publicKey.toString(16));
+        System.out.println("Klucz prywatny x (hex): " + x.toString(16));
+        System.out.println("Klucz publiczny y (hex): " + y.toString(16));
     }
 
     /**
@@ -103,20 +111,21 @@ public class ElGamal {
      * @throws NoSuchAlgorithmException Jeśli algorytm SHA-256 nie jest dostępny.
      */
     public BigInteger[] sign(byte[] message) throws NoSuchAlgorithmException {
-        if (privateKey == null || p == null || g == null) {
+        if (x == null || p == null || g == null) {
             throw new IllegalStateException("Klucze lub parametry nie zostały zainicjowane.");
         }
 
         BigInteger pMinusOne = p.subtract(BigInteger.ONE);
+        BigInteger pMinusTwo = pMinusOne.subtract(BigInteger.ONE);
         BigInteger k, r, s;
 
         // 1. Oblicz skrót wiadomości H(m)
         BigInteger mHash = hashMessage(message);
 
-        // 2. Wygeneruj losowe k takie, że 1 < k < p-1 oraz NWD(k, p-1) = 1
+        // 2. Wygeneruj losowe k takie, że 1 <= k <= p-2 oraz NWD(k, p-1) = 1
         do {
             k = new BigInteger(p.bitLength() - 1, random);
-        } while (k.compareTo(BigInteger.ONE) <= 0 || k.compareTo(pMinusOne) >= 0 || !k.gcd(pMinusOne).equals(BigInteger.ONE));
+        } while (k.compareTo(BigInteger.ONE) < 0 || k.compareTo(pMinusTwo) > 0 || !k.gcd(pMinusOne).equals(BigInteger.ONE));
 
         // 3. Oblicz r = g^k mod p
         r = g.modPow(k, p);
@@ -127,7 +136,7 @@ public class ElGamal {
         BigInteger kInv = k.modInverse(pMinusOne);
 
         // 4.2 Oblicz xr = x * r
-        BigInteger xr = privateKey.multiply(r);
+        BigInteger xr = x.multiply(r);
 
         // 4.3 Oblicz H(m) - xr
         BigInteger mMinusXr = mHash.subtract(xr);
