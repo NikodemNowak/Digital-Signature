@@ -11,12 +11,22 @@
 
     <artifactId>core</artifactId>
 
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <!-- Nie trzeba redefiniować properties, dziedziczy Java 21 z parent -->
+
     <dependencies>
+        <!-- Zależność JUnit (użyj JUnit 5 dla spójności, jeśli piszesz testy) -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <!-- Wersja zarządzana w parent -->
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <!-- Wersja zarządzana w parent -->
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -24,5 +34,7 @@
         </dependency>
     </dependencies>
 
+    <!-- Nie jest konieczne definiowanie maven-compiler-plugin, jeśli dziedziczy z parent
+         i nie ma specjalnej konfiguracji dla tego modułu -->
 
 </project>

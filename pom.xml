@@ -7,7 +7,7 @@
     <groupId>org.zespol</groupId>
     <artifactId>Digital-Signature</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <packaging>pom</packaging> <!-- Poprawne dla parent POM -->
 
     <modules>
         <module>core</module>
@@ -15,9 +15,77 @@
     </modules>
 
     <properties>
+        <!-- Wersja Javy dla całego projektu -->
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Wersja JUnit 5 (do użycia w modułach) -->
+        <junit.version>5.10.2</junit.version>
+        <!-- Wersja JavaFX -->
+        <javafx.version>21</javafx.version>
+        <!-- Wersja maven-compiler-plugin -->
+        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+        <!-- Wersja javafx-maven-plugin -->
+        <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
     </properties>
+
+    <!-- Opcjonalnie: Zarządzanie zależnościami dla spójności wersji -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- JavaFX -->
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-controls</artifactId>
+                <version>${javafx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-fxml</artifactId>
+                <version>${javafx.version}</version>
+            </dependency>
+            <!-- Inne zależności (np. ControlsFX, FormsFX) - jeśli używane -->
+            <dependency>
+                <groupId>org.controlsfx</groupId>
+                <artifactId>controlsfx</artifactId>
+                <version>11.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlsc.formsfx</groupId>
+                <artifactId>formsfx-core</artifactId>
+                <version>11.6.0</version>
+            </dependency>
+            <!-- JUnit 5 -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Opcjonalnie: Zarządzanie wersjami pluginów -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-maven-plugin</artifactId>
+                    <version>${javafx.maven.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
