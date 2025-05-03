@@ -15,7 +15,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties; // Do łatwego zapisu/odczytu kluczy
 
@@ -23,24 +22,14 @@ public class HelloController {
 
     // --- Elementy FXML ---
     @FXML private TextField bitLengthField;
-    @FXML private Button generateKeysButton;
-    @FXML private Button savePrivateKeyButton;
-    @FXML private Button savePublicKeyButton;
-    @FXML private Button loadPrivateKeyButton;
-    @FXML private Button loadPublicKeyButton;
     @FXML private TextField pField;
     @FXML private TextField gField;
     @FXML private TextField xField;
     @FXML private TextField yField;
     @FXML private TextField rField;
     @FXML private TextField sField;
-    @FXML private Button saveSignatureButton;
-    @FXML private Button loadSignatureButton;
-    @FXML private Button chooseFileButton;
     @FXML private TextArea messageArea;
     @FXML private Label selectedFileLabel;
-    @FXML private Button signButton;
-    @FXML private Button verifyButton;
     @FXML private TextField verificationResultField;
     @FXML private Label statusLabel;
 
@@ -63,7 +52,6 @@ public class HelloController {
         updateStatus("Gotowy.", false);
     }
 
-    // --- Obsługa Zdarzeń ---
 
     @FXML
     void handleGenerateKeys(ActionEvent event) {
@@ -331,13 +319,7 @@ public class HelloController {
             messageArea.clear(); // Wyczyść pole tekstowe, gdy plik jest wybrany
             messageArea.setDisable(true); // Opcjonalnie zablokuj pole tekstowe
             updateStatus("Wybrano plik: " + selectedFile.getName(), false);
-        } else {
-            // Opcjonalnie: obsłuż anulowanie wyboru
-            // selectedFile = null;
-            // selectedFileLabel.setText("(Nie wybrano pliku)");
-            // messageArea.setDisable(false);
-        }
-    }
+        }     }
 
     @FXML
     void handleSignMessage(ActionEvent event) {
@@ -504,7 +486,6 @@ public class HelloController {
         if (statusLabel != null && statusLabel.getScene() != null && statusLabel.getScene().getWindow() != null) {
             return (Stage) statusLabel.getScene().getWindow();
         }
-        // Fallback - może nie zadziałać przed pełnym załadowaniem sceny
         return null;
     }
 }
